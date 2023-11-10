@@ -1,10 +1,10 @@
 import 'package:eve_test/resources/app_image.dart';
-import 'package:eve_test/screen/login_screen.dart';
+import 'package:eve_test/screen/auth/login_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:get/get.dart';
 
-class SplashScreen extends StatelessWidget {
+class SplashScreen extends GetView {
   const SplashScreen({super.key});
 
   @override

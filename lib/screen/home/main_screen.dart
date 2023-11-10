@@ -1,0 +1,135 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'package:eve_test/screen/home/controller/main_controller.dart';
+import 'package:eve_test/screen/home/profile/profile_screen.dart';
+import 'package:eve_test/widget/button/menu_button.dart';
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+
+class MainScreen extends GetView<MainController> {
+  const MainScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      bottomNavigationBar: BottomBar(pageController: controller.pageController),
+      body: PageView(
+        controller: controller.pageController,
+        physics: const NeverScrollableScrollPhysics(),
+        scrollDirection: Axis.horizontal,
+        children: const [
+          SizedBox(
+            child: Center(child: Text("Home")),
+          ),
+          SizedBox(
+            child: Center(child: Text("Date")),
+          ),
+          SizedBox(
+            child: Center(child: Text("List")),
+          ),
+          SizedBox(
+            child: Center(child: Text("Chat")),
+          ),
+          ProfileScreen(),
+        ],
+      ),
+    );
+  }
+}
+
+class BottomBar extends StatefulWidget {
+  const BottomBar({
+    Key? key,
+    required this.pageController,
+  }) : super(key: key);
+
+  final PageController pageController;
+
+  @override
+  State<BottomBar> createState() => _BottomBarState();
+}
+
+class _BottomBarState extends State<BottomBar> {
+  int index = 0;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 100,
+      padding: const EdgeInsets.symmetric(horizontal: 10),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        boxShadow: [
+          BoxShadow(
+            offset: const Offset(0, 1),
+            color: Colors.grey.withOpacity(0.2),
+            blurRadius: 15,
+            spreadRadius: 1,
+          ),
+        ],
+        borderRadius: const BorderRadius.vertical(
+          top: Radius.circular(40),
+        ),
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          MenuButton(
+            icon: Icons.home,
+            isTapped: index == 0,
+            onTap: () {
+              index = 0;
+              widget.pageController.animateToPage(index,
+                  duration: const Duration(milliseconds: 10),
+                  curve: Curves.easeInOut);
+              setState(() {});
+            },
+          ),
+          MenuButton(
+            icon: Icons.date_range,
+            isTapped: index == 1,
+            onTap: () {
+              index = 1;
+              widget.pageController.animateToPage(index,
+                  duration: const Duration(milliseconds: 10),
+                  curve: Curves.easeInOut);
+              setState(() {});
+            },
+          ),
+          MenuButton(
+            icon: Icons.list,
+            isTapped: index == 2,
+            onTap: () {
+              index = 2;
+              widget.pageController.animateToPage(index,
+                  duration: const Duration(milliseconds: 10),
+                  curve: Curves.easeInOut);
+              setState(() {});
+            },
+          ),
+          MenuButton(
+            icon: Icons.chat,
+            isTapped: index == 3,
+            onTap: () {
+              index = 3;
+              widget.pageController.animateToPage(index,
+                  duration: const Duration(milliseconds: 10),
+                  curve: Curves.easeInOut);
+              setState(() {});
+            },
+          ),
+          MenuButton(
+            icon: Icons.person,
+            isTapped: index == 4,
+            onTap: () {
+              index = 4;
+              widget.pageController.animateToPage(index,
+                  duration: const Duration(milliseconds: 10),
+                  curve: Curves.easeInOut);
+              setState(() {});
+            },
+          ),
+        ],
+      ),
+    );
+  }
+}

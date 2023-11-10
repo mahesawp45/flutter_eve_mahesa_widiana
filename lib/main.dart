@@ -1,4 +1,5 @@
-import 'package:eve_test/screen/splash_screen.dart';
+import 'package:eve_test/routes/app_pages.dart';
+import 'package:eve_test/screen/splash/splash_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -13,12 +14,15 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
-      title: 'Flutter Demo',
+      title: 'Eve Test',
+      debugShowCheckedModeBanner: false,
+      initialRoute: AppPages.INITIAL,
+      getPages: AppPages.routes,
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.green),
+        appBarTheme: const AppBarTheme(surfaceTintColor: Colors.white),
         useMaterial3: true,
       ),
-      home: const SplashScreen(),
     );
   }
 }
