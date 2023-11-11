@@ -1,12 +1,12 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
-import 'package:eve_test/widget/button/auth_button_rounded.dart';
-import 'package:eve_test/widget/button/auth_main_button.dart';
-import 'package:eve_test/widget/input/input_check_box.dart';
-import 'package:eve_test/widget/input/input_text.dart';
 import 'package:flutter/material.dart';
 
 import 'package:eve_test/resources/app_image.dart';
 import 'package:eve_test/resources/app_string.dart';
+import 'package:eve_test/widget/button/auth_button_rounded.dart';
+import 'package:eve_test/widget/button/auth_main_button.dart';
+import 'package:eve_test/widget/input/input_check_box.dart';
+import 'package:eve_test/widget/input/input_text.dart';
 
 class SignScreen extends StatelessWidget {
   const SignScreen({
@@ -22,6 +22,7 @@ class SignScreen extends StatelessWidget {
     required this.onFacebookTap,
     required this.onGoogleTap,
     required this.onAppleTap,
+    required this.isLoading,
   }) : super(key: key);
 
   final String title;
@@ -35,6 +36,7 @@ class SignScreen extends StatelessWidget {
   final VoidCallback onFacebookTap;
   final VoidCallback onGoogleTap;
   final VoidCallback onAppleTap;
+  final bool isLoading;
 
   @override
   Widget build(BuildContext context) {
@@ -84,6 +86,7 @@ class SignScreen extends StatelessWidget {
                       onChanged: onChangedCheck,
                     ),
                     AuthMainButton(
+                      isLoading: isLoading,
                       label: authMainButtonLabel,
                       padding: const EdgeInsets.symmetric(vertical: 24),
                       onTap: onAuthMainButtonTap,

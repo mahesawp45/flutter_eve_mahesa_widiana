@@ -1,7 +1,5 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
-import 'dart:developer';
 
-import 'package:eve_test/routes/app_routes.dart';
 import 'package:eve_test/screen/auth/controller/login_controller.dart';
 import 'package:eve_test/screen/auth/sign_screen.dart';
 
@@ -19,32 +17,42 @@ import 'package:get/get.dart';
 class LoginScreen extends GetView<LoginController> {
   const LoginScreen({super.key});
 
-  loginWithGoogle() async {
-    try {
-      var user = await controller.signInWithGoogle();
-
-      if (user.credential != null) {
-        Get.offAllNamed(Routes.HOME);
-      }
-    } catch (e) {
-      Get.defaultDialog(title: e.toString());
-    }
-  }
-
-  loginWithFacebook() async {
-    try {
-      var user = await controller.signInWithFacebook();
-
-      if (user.credential != null) {
-        Get.offAllNamed(Routes.HOME);
-      }
-    } catch (e) {
-      Get.defaultDialog(title: e.toString());
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
+    final LoginController c = Get.put(LoginController());
+
+    register() {
+      if (c.emailSignUpController.text == "") {
+        Get.snackbar(AppString.errorTitle, "Email must not empty!");
+        return;
+      }
+
+      if (c.passwordSignUpController.text == "") {
+        Get.snackbar(AppString.errorTitle, "Password must not empty!");
+        return;
+      }
+
+      c.registerWithEmail(
+          email: c.emailSignUpController.text,
+          password: c.passwordSignUpController.text);
+    }
+
+    login() {
+      if (c.emailSignInController.text == "") {
+        Get.snackbar(AppString.errorTitle, "Email must not empty!");
+        return;
+      }
+
+      if (c.passwordSignInController.text == "") {
+        Get.snackbar(AppString.errorTitle, "Password must not empty!");
+        return;
+      }
+
+      c.loginWithEmail(
+          email: c.emailSignInController.text,
+          password: c.passwordSignInController.text);
+    }
+
     return Scaffold(
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -65,13 +73,17 @@ class LoginScreen extends GetView<LoginController> {
                   icon: AppImage.facebook,
                   label: AppString.facebook,
                   padding: const EdgeInsets.only(bottom: 14),
-                  onTap: loginWithFacebook,
+                  onTap: () {
+                    controller.signInWithFacebook();
+                  },
                 ),
                 AuthButton(
                   icon: AppImage.google,
                   label: AppString.google,
                   padding: const EdgeInsets.only(bottom: 14),
-                  onTap: loginWithGoogle,
+                  onTap: () {
+                    controller.signInWithGoogle();
+                  },
                 ),
                 AuthButton(
                   icon: AppImage.apple,
@@ -90,29 +102,67 @@ class LoginScreen extends GetView<LoginController> {
             ),
           ),
           AuthMainButton(
+            isLoading: false,
             label: AppString.withPass,
             padding: const EdgeInsets.all(24),
             onTap: () {
               Get.to(
-                SignScreen(
-                  title: AppString.signIn,
-                  authMainButtonLabel: AppString.signIn,
-                  emailController: TextEditingController(),
-                  passwordController: TextEditingController(),
-                  onAuthMainButtonTap: () {
-                    Get.toNamed(Routes.HOME);
-                  },
-                  onFacebookTap: () {},
-                  onGoogleTap: () {},
-                  onAppleTap: () {},
-                  isChecked: false,
-                  onChangedCheck: (value) {},
-                  textAuthButton: TextAuthButton(
-                    question: AppString.dontHaveAcc,
-                    labelButton: AppString.signUp,
-                    onTap: () {},
-                  ),
-                ),
+                Obx(() {
+                  return SignScreen(
+                    isLoading: c.isLoading.value,
+                    title: AppString.signIn,
+                    authMainButtonLabel: AppString.signIn,
+                    emailController: c.emailSignInController,
+                    passwordController: c.passwordSignInController,
+                    onAuthMainButtonTap: login,
+                    onFacebookTap: () {
+                      c.signInWithFacebook();
+                    },
+                    onGoogleTap: () {
+                      c.signInWithGoogle();
+                    },
+                    onAppleTap: () {},
+                    isChecked: false,
+                    onChangedCheck: (value) {},
+                    textAuthButton: TextAuthButton(
+                      question: AppString.dontHaveAcc,
+                      labelButton: AppString.signUp,
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => Obx(() {
+                              return SignScreen(
+                                isLoading: c.isLoading.value,
+                                title: AppString.signUpFree,
+                                authMainButtonLabel: AppString.signUp,
+                                emailController: c.emailSignUpController,
+                                passwordController: c.passwordSignUpController,
+                                onAuthMainButtonTap: register,
+                                onFacebookTap: () {
+                                  c.signInWithFacebook();
+                                },
+                                onGoogleTap: () {
+                                  c.signInWithGoogle();
+                                },
+                                onAppleTap: () {},
+                                isChecked: false,
+                                onChangedCheck: (value) {},
+                                textAuthButton: TextAuthButton(
+                                  question: AppString.alreadyAcc,
+                                  labelButton: AppString.signIn,
+                                  onTap: () {
+                                    Get.back();
+                                  },
+                                ),
+                              );
+                            }),
+                          ),
+                        );
+                      },
+                    ),
+                  );
+                }),
               );
             },
           ),
@@ -121,25 +171,32 @@ class LoginScreen extends GetView<LoginController> {
             labelButton: AppString.signUp,
             onTap: () {
               Get.to(
-                SignScreen(
-                  title: AppString.signUpFree,
-                  authMainButtonLabel: AppString.signUp,
-                  emailController: TextEditingController(),
-                  passwordController: TextEditingController(),
-                  onAuthMainButtonTap: () {},
-                  onFacebookTap: () {},
-                  onGoogleTap: () {},
-                  onAppleTap: () {},
-                  isChecked: false,
-                  onChangedCheck: (value) {},
-                  textAuthButton: TextAuthButton(
-                    question: AppString.alreadyAcc,
-                    labelButton: AppString.signIn,
-                    onTap: () {
-                      Get.back();
+                Obx(() {
+                  return SignScreen(
+                    isLoading: c.isLoading.value,
+                    title: AppString.signUpFree,
+                    authMainButtonLabel: AppString.signUp,
+                    emailController: c.emailSignUpController,
+                    passwordController: c.passwordSignUpController,
+                    onAuthMainButtonTap: register,
+                    onFacebookTap: () {
+                      c.signInWithFacebook();
                     },
-                  ),
-                ),
+                    onGoogleTap: () {
+                      c.signInWithGoogle();
+                    },
+                    onAppleTap: () {},
+                    isChecked: false,
+                    onChangedCheck: (value) {},
+                    textAuthButton: TextAuthButton(
+                      question: AppString.alreadyAcc,
+                      labelButton: AppString.signIn,
+                      onTap: () {
+                        Get.back();
+                      },
+                    ),
+                  );
+                }),
               );
             },
           )

@@ -1,4 +1,11 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
+
+import 'dart:developer';
+
+import 'package:eve_test/resources/app_image.dart';
+import 'package:eve_test/screen/auth/controller/login_controller.dart';
+import 'package:eve_test/widget/button/auth_button.dart';
+import 'package:eve_test/widget/input/input_text.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -17,10 +24,11 @@ class ProfileScreen extends GetView<ProfileController> {
     double height = MediaQuery.of(context).size.height;
 
     final ProfileController c = Get.put(ProfileController());
+    final LoginController loginC = Get.put(LoginController());
 
     logout() {
       Get.defaultDialog(
-        title: "Sure?",
+        title: "Logout?",
         content: const SizedBox(),
         actions: [
           TextButton(
@@ -55,11 +63,34 @@ class ProfileScreen extends GetView<ProfileController> {
         actions: [
           MenuButton(
             icon: Icons.settings,
-            onTap: () {},
+            onTap: () {
+              Get.defaultDialog(
+                title: "Switch To",
+                content: Column(
+                  children: [
+                    AuthButton(
+                      icon: AppImage.facebook,
+                      label: AppString.facebook,
+                      onTap: () {
+                        loginC.signInWithFacebook();
+                      },
+                    ),
+                    const SizedBox(height: 16),
+                    AuthButton(
+                      icon: AppImage.google,
+                      label: AppString.google,
+                      onTap: () {
+                        loginC.signInWithGoogle();
+                      },
+                    ),
+                  ],
+                ),
+              );
+            },
           ),
           const SizedBox(width: 12),
           MenuButton(
-            icon: Icons.more_vert,
+            icon: Icons.logout,
             onTap: logout,
           ),
           const SizedBox(width: 18),
@@ -73,9 +104,9 @@ class ProfileScreen extends GetView<ProfileController> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               const SizedBox(height: 24),
-              ProfileImage(imageUrl: "${c.user.photoURL}"),
+              ProfileImage(imageUrl: c.user.photoURL ?? ""),
               const SizedBox(height: 24),
-              ProfileName(name: c.user.displayName ?? "-"),
+              ProfileName(name: c.user.displayName ?? (c.user.email ?? "-")),
               const SizedBox(height: 24),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -122,7 +153,38 @@ class ProfileScreen extends GetView<ProfileController> {
                     const SizedBox(height: 24),
                     ProfileAbout(about: c.about),
                     const SizedBox(height: 24),
-                    ProfileInterest(interest: c.interest),
+                    Obx(() {
+                      return ProfileInterest(
+                        interest: c.interest.value,
+                        onAdd: () {
+                          Get.defaultDialog(
+                            title: "Add New Interest",
+                            content: Column(
+                              children: [
+                                InputText(
+                                  label: "",
+                                  hintText: "your interest",
+                                  controller: c.addInterestController,
+                                ),
+                                const SizedBox(height: 16),
+                                ElevatedButton(
+                                  onPressed: () {
+                                    c.interest
+                                        .add(c.addInterestController.text);
+                                    c.addInterestController.text = "";
+                                    Get.back();
+                                  },
+                                  child: const SizedBox(
+                                    width: double.infinity,
+                                    child: Center(child: Text("Add")),
+                                  ),
+                                )
+                              ],
+                            ),
+                          );
+                        },
+                      );
+                    }),
                     const SizedBox(height: 100),
                   ],
                 ),
@@ -139,9 +201,11 @@ class ProfileInterest extends StatelessWidget {
   const ProfileInterest({
     Key? key,
     required this.interest,
+    required this.onAdd,
   }) : super(key: key);
 
   final List<String> interest;
+  final VoidCallback onAdd;
 
   @override
   Widget build(BuildContext context) {
@@ -179,7 +243,7 @@ class ProfileInterest extends StatelessWidget {
               ),
             ),
             IconButton(
-              onPressed: () {},
+              onPressed: onAdd,
               icon: const Icon(
                 Icons.edit,
                 color: Colors.green,
@@ -360,10 +424,13 @@ class ProfileImage extends StatelessWidget {
           borderRadius: BorderRadius.circular(100),
           child: CircleAvatar(
             radius: 54,
-            child: Image.network(
-              imageUrl,
-              scale: 0.5,
-              fit: BoxFit.cover,
+            child: Visibility(
+              visible: imageUrl != "",
+              child: Image.network(
+                imageUrl,
+                scale: 0.5,
+                fit: BoxFit.cover,
+              ),
             ),
           ),
         ),

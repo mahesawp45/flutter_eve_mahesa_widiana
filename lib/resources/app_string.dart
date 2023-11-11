@@ -21,4 +21,5 @@ class AppString {
   static const String topUp = "Top up";
   static const String about = "About";
   static const String interest = "Interest";
+  static const String errorTitle = "Sorry!";
 }

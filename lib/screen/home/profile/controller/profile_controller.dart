@@ -7,9 +7,10 @@ import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 
 class ProfileController extends GetxController {
-  late PageController pageController;
   late User user;
-  final List<String> interest = [
+  late TextEditingController addInterestController;
+
+  RxList<String> interest = [
     "Photography",
     "Cooking",
     "Gardening",
@@ -17,7 +18,7 @@ class ProfileController extends GetxController {
     "Painting",
     "Reading",
     "Yoga"
-  ];
+  ].obs;
 
   final String about =
       "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s";
@@ -26,13 +27,7 @@ class ProfileController extends GetxController {
   void onInit() {
     super.onInit();
     getUser();
-    pageController = PageController();
-  }
-
-  @override
-  void onClose() {
-    super.onClose();
-    pageController.dispose();
+    addInterestController = TextEditingController(text: "");
   }
 
   getUser() {
