@@ -3,9 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import 'package:eve_test/resources/app_string.dart';
+import 'package:eve_test/screen/home/profile/controller/profile_controller.dart';
 import 'package:eve_test/widget/button/menu_button.dart';
 
-class ProfileScreen extends GetView {
+class ProfileScreen extends GetView<ProfileController> {
   const ProfileScreen({
     super.key,
   });
@@ -14,6 +15,23 @@ class ProfileScreen extends GetView {
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
+
+    final ProfileController c = Get.put(ProfileController());
+
+    logout() {
+      Get.defaultDialog(
+        title: "Sure?",
+        content: const SizedBox(),
+        actions: [
+          TextButton(
+            onPressed: () async {
+              await controller.signOut();
+            },
+            child: const Text("Yes"),
+          ),
+        ],
+      );
+    }
 
     return Scaffold(
       appBar: AppBar(
@@ -42,7 +60,7 @@ class ProfileScreen extends GetView {
           const SizedBox(width: 12),
           MenuButton(
             icon: Icons.more_vert,
-            onTap: () {},
+            onTap: logout,
           ),
           const SizedBox(width: 18),
         ],
@@ -55,9 +73,9 @@ class ProfileScreen extends GetView {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               const SizedBox(height: 24),
-              const ProfileImage(),
+              ProfileImage(imageUrl: "${c.user.photoURL}"),
               const SizedBox(height: 24),
-              const ProfileName(),
+              ProfileName(name: c.user.displayName ?? "-"),
               const SizedBox(height: 24),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -102,9 +120,9 @@ class ProfileScreen extends GetView {
                     const SizedBox(height: 24),
                     const WalletCard(),
                     const SizedBox(height: 24),
-                    const ProfileAbout(),
+                    ProfileAbout(about: c.about),
                     const SizedBox(height: 24),
-                    const ProfileInterest(),
+                    ProfileInterest(interest: c.interest),
                     const SizedBox(height: 100),
                   ],
                 ),
@@ -119,18 +137,22 @@ class ProfileScreen extends GetView {
 
 class ProfileInterest extends StatelessWidget {
   const ProfileInterest({
-    super.key,
-  });
+    Key? key,
+    required this.interest,
+  }) : super(key: key);
+
+  final List<String> interest;
 
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
 
     List<Widget> generateInterestChips() {
-      return List.generate(7, (index) {
-        return Chip(
+      List<Widget> chips = [];
+      for (var element in interest) {
+        chips.add(Chip(
           label: Text(
-            index % 2 == 0 ? "Medical $index" : "Technology $index",
+            element,
             style: const TextStyle(color: Colors.green),
           ),
           side: const BorderSide(
@@ -140,8 +162,9 @@ class ProfileInterest extends StatelessWidget {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(40),
           ),
-        );
-      });
+        ));
+      }
+      return chips;
     }
 
     return Column(
@@ -180,24 +203,26 @@ class ProfileInterest extends StatelessWidget {
 
 class ProfileAbout extends StatelessWidget {
   const ProfileAbout({
-    super.key,
-  });
+    Key? key,
+    required this.about,
+  }) : super(key: key);
+
+  final String about;
 
   @override
   Widget build(BuildContext context) {
-    return const Column(
+    return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
+        const Text(
           AppString.about,
           style: TextStyle(
             fontSize: 20,
             fontWeight: FontWeight.bold,
           ),
         ),
-        SizedBox(height: 8),
-        Text(
-            "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s")
+        const SizedBox(height: 8),
+        Text(about)
       ],
     );
   }
@@ -301,14 +326,17 @@ class ObjectiveItem extends StatelessWidget {
 
 class ProfileName extends StatelessWidget {
   const ProfileName({
-    super.key,
-  });
+    Key? key,
+    required this.name,
+  }) : super(key: key);
+
+  final String name;
 
   @override
   Widget build(BuildContext context) {
-    return const Text(
-      "My Name",
-      style: TextStyle(
+    return Text(
+      name,
+      style: const TextStyle(
         fontSize: 24,
         fontWeight: FontWeight.bold,
       ),
@@ -318,15 +346,26 @@ class ProfileName extends StatelessWidget {
 
 class ProfileImage extends StatelessWidget {
   const ProfileImage({
-    super.key,
-  });
+    Key? key,
+    required this.imageUrl,
+  }) : super(key: key);
+
+  final String imageUrl;
 
   @override
   Widget build(BuildContext context) {
     return Stack(
       children: [
-        const CircleAvatar(
-          radius: 54,
+        ClipRRect(
+          borderRadius: BorderRadius.circular(100),
+          child: CircleAvatar(
+            radius: 54,
+            child: Image.network(
+              imageUrl,
+              scale: 0.5,
+              fit: BoxFit.cover,
+            ),
+          ),
         ),
         Positioned(
           right: 0,

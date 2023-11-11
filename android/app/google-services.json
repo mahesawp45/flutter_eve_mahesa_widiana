@@ -1,0 +1,54 @@
+{
+  "project_info": {
+    "project_number": "1095235233200",
+    "project_id": "eve-test-81192",
+    "storage_bucket": "eve-test-81192.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1095235233200:android:37cb8d28e4ca1f031ce275",
+        "android_client_info": {
+          "package_name": "com.example.eve_test"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1095235233200-60qm1ss5jh8o895v8pd087omohqpa7ma.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.eve_test",
+            "certificate_hash": "0683d3b5566ada429c26fef3a222a5f9e5bd4576"
+          }
+        },
+        {
+          "client_id": "1095235233200-0ip4s0r0itvqcpsqanfqul63af5gq85m.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDbGrs8AotcGceu84XPCVN2JivKdbm6a6M"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1095235233200-0ip4s0r0itvqcpsqanfqul63af5gq85m.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "1095235233200-6k1eqnk57lr6mubsdo008gqvs4niufa3.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.eveTest"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

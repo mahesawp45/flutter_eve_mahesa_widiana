@@ -1,16 +1,16 @@
 import 'package:eve_test/resources/app_image.dart';
-import 'package:eve_test/screen/auth/login_screen.dart';
+import 'package:eve_test/screen/splash/controller/splash_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:get/get.dart';
 
-class SplashScreen extends GetView {
+class SplashScreen extends GetView<SplashController> {
   const SplashScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
     Future.delayed(const Duration(seconds: 3), () {
-      Get.offAll(const LoginScreen());
+      controller.isLoggedIn();
     });
 
     return Scaffold(

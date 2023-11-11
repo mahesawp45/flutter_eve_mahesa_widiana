@@ -1,5 +1,8 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'dart:developer';
+
 import 'package:eve_test/routes/app_routes.dart';
+import 'package:eve_test/screen/auth/controller/login_controller.dart';
 import 'package:eve_test/screen/auth/sign_screen.dart';
 
 import 'package:eve_test/widget/button/auth_button.dart';
@@ -13,8 +16,32 @@ import 'package:eve_test/resources/app_string.dart';
 
 import 'package:get/get.dart';
 
-class LoginScreen extends GetView {
+class LoginScreen extends GetView<LoginController> {
   const LoginScreen({super.key});
+
+  loginWithGoogle() async {
+    try {
+      var user = await controller.signInWithGoogle();
+
+      if (user.credential != null) {
+        Get.offAllNamed(Routes.HOME);
+      }
+    } catch (e) {
+      Get.defaultDialog(title: e.toString());
+    }
+  }
+
+  loginWithFacebook() async {
+    try {
+      var user = await controller.signInWithFacebook();
+
+      if (user.credential != null) {
+        Get.offAllNamed(Routes.HOME);
+      }
+    } catch (e) {
+      Get.defaultDialog(title: e.toString());
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -38,13 +65,13 @@ class LoginScreen extends GetView {
                   icon: AppImage.facebook,
                   label: AppString.facebook,
                   padding: const EdgeInsets.only(bottom: 14),
-                  onTap: () {},
+                  onTap: loginWithFacebook,
                 ),
                 AuthButton(
                   icon: AppImage.google,
                   label: AppString.google,
                   padding: const EdgeInsets.only(bottom: 14),
-                  onTap: () {},
+                  onTap: loginWithGoogle,
                 ),
                 AuthButton(
                   icon: AppImage.apple,
